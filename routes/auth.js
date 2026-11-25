@@ -13,7 +13,7 @@ const DEMO_ACCOUNTS = [
     email: 'rahul@vppcoe.demo',
     password: 'Demo@1234',
     tenantId: 'vpcoe-mumbai',
-    collegeName: "Vasantdada Patil Pratishthan's College of Engineering & VA",
+    collegeName: "Premier Technological Institute",
     description: 'Final Year CSE student, 8.42 CGPA, 230 LeetCode, targeting Backend Developer'
   },
   {
@@ -22,7 +22,7 @@ const DEMO_ACCOUNTS = [
     email: 'anil.kulkarni@vppcoe.demo',
     password: 'Demo@1234',
     tenantId: 'vpcoe-mumbai',
-    collegeName: "Vasantdada Patil Pratishthan's College of Engineering & VA",
+    collegeName: "Premier Technological Institute",
     description: 'Head Training & Placement Officer: Drives, Rules v2.1, Approval Queue, Campaigns'
   },
   {
@@ -31,7 +31,7 @@ const DEMO_ACCOUNTS = [
     email: 'hod.cs@vppcoe.demo',
     password: 'Demo@1234',
     tenantId: 'vpcoe-mumbai',
-    collegeName: "Vasantdada Patil Pratishthan's College of Engineering & VA",
+    collegeName: "Premier Technological Institute",
     description: 'Head of Computer Science: Departmental cohort analytics & mentor attestations'
   },
   {

@@ -198,7 +198,7 @@ let activeLeetCodeFilter = {
 
 // College display mapping
 const TENANT_NAMES = {
-  'vpcoe-mumbai': "Vasantdada Patil Pratishthan's College of Engineering & Visual Arts (VPCOE & VA), Mumbai",
+  'vpcoe-mumbai': "Premier Technological Institute (Institutional Node)",
   'coep-pune': 'COEP Technological University, Pune',
   'vjti-mumbai': 'Veermata Jijabai Technological Institute (VJTI), Mumbai'
 };
@@ -733,7 +733,7 @@ function renderCjpStudentIdCard(s) {
             </div>
             <div>
               <div class="cjp-card-title-text">National Institutional Placement Identity Pass</div>
-              <div class="cjp-card-college-text">Vasantdada Patil Pratishthan's College of Engineering & Visual Arts • Affiliated Univ. of Mumbai</div>
+              <div class="cjp-card-college-text">Premier Technological Institute • Institutional Node</div>
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 8px;">
@@ -4390,7 +4390,7 @@ function openAuthModal(mode = 'signin') {
               </div>
               <div>
                 <div class="auth-brand-title">Placement Intelligence</div>
-                <div class="auth-brand-subtitle">Quasar 5.0 • EdTech Domain</div>
+                <div class="auth-brand-subtitle">Enterprise Placement Intelligence Platform</div>
               </div>
             </div>
 
@@ -4990,7 +4990,7 @@ const TOUR_STEPS = [
   {
     step: 1,
     title: '1. Multi-Tenant University Context',
-    desc: 'You are viewing Vasantdada Patil Pratishthan\'s College of Engineering & VA (VPCOE Mumbai), affiliated with University of Mumbai. Strict multi-tenant isolation prevents cross-college data leaks.',
+    desc: 'You are viewing Premier Technological Institute (Institutional Node). Strict multi-tenant isolation prevents cross-college data leaks.',
     portal: 'student',
     highlightSelector: '.site-header'
   },

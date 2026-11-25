@@ -43,7 +43,7 @@ app.use((req, res) => {
 const server = app.listen(PORT, () => {
   console.log(`=================================================================`);
   console.log(`🚀 Agentic Placement Intelligence Platform running on http://localhost:${PORT}`);
-  console.log(`🏛️ Tenant Context: Vasantdada Patil Pratishthan's College of Engineering & Visual Arts (VPCOE & VA)`);
+  console.log(`🏛️ Tenant Context: Premier Technological Institute (Institutional Node)`);
   console.log(`🔒 Security Layer: India DPDP Act 2023 + SHA-256 Tamper-Evident Ledger`);
   console.log(`🤖 AI Engine: "AI Helps, Human Decides" Governance Active`);
   console.log(`=================================================================`);

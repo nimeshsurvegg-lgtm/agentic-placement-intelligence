@@ -89,7 +89,7 @@ const TAXONOMY = {
 const TENANTS = [
   {
     id: 'vpcoe-mumbai',
-    name: "Vasantdada Patil Pratishthan's College of Engineering & Visual Arts (VPCOE & VA)",
+    name: "Premier Technological Institute",
     code: 'VPCOE',
     university: 'University of Mumbai',
     location: 'Sion, Mumbai, Maharashtra',
@@ -1394,11 +1394,11 @@ let RECRUITERS = [
 let MAIL_TEMPLATES = [
   {
     id: 'TMPL-CAMPUS-INVITE-2026',
-    title: 'VPCOE & VA Campus Placement Season 2026-27 Official Invitation',
-    subject: "Invitation to Campus Placement Drive 2026-27 | Vasantdada Patil Pratishthan's College of Engineering (VPCOE & VA)",
+    title: 'Campus Placement Season 2026-27 Official Invitation',
+    subject: "Invitation to Campus Placement Drive 2026-27 | Premier Technological Institute",
     body: `Respected Campus Hiring Leader,
 
-Greetings from Vasantdada Patil Pratishthan's College of Engineering & Visual Arts (VPCOE & VA), Mumbai!
+Greetings from Premier Technological Institute!
 
 We are pleased to invite your esteemed organization for the Campus Recruitment Season 2026-27 for our graduating batch of B.Tech engineers (CSE, IT, ECE, Mechanical, and AI).
 

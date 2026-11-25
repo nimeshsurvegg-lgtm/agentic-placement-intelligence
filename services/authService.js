@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const dbService = require('./db');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'quasar-5.0-agentic-placement-security-key-2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'edtech-agentic-placement-security-key-2026';
 const JWT_EXPIRES_IN = '8h';
 const SESSION_INACTIVITY_MS = 30 * 60 * 1000; // 30 minutes auto-logout
 const RATE_LIMIT_MAX = 5;

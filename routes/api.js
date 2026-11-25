@@ -371,7 +371,7 @@ router.get('/students/:id/resume', (req, res) => {
       rollNo: student.roll_no,
       email: student.email,
       phone: student.phone,
-      college: tenant ? tenant.name : "Vasantdada Patil Pratishthan's College of Engineering & VA",
+      college: tenant ? tenant.name : "Premier Technological Institute",
       branch: student.branch,
       batch: student.batch,
       cgpa: student.cgpa,
@@ -1950,7 +1950,7 @@ router.get('/students/:id/calendar-events', (req, res) => {
   events.push(
     { id: 'EVT-MOCK', title: '3-Round Placement Mock Assessment', type: 'assessment', date: '2026-10-10', venue: 'Virtual Lab A', badgeColor: '#00b8a3' },
     { id: 'EVT-ALUM', title: 'Alumni Mentorship with Pooja Hegde (Microsoft)', type: 'mentorship', date: '2026-10-15', venue: 'Google Meet', badgeColor: '#8b5cf6' },
-    { id: 'EVT-HACK', title: 'Quasar 5.0 EdTech Hackathon Submission', type: 'hackathon', date: '2026-11-28', venue: 'Devpost Portal', badgeColor: '#f59e0b' }
+    { id: 'EVT-HACK', title: 'National EdTech Innovation Challenge', type: 'hackathon', date: '2026-11-28', venue: 'Innovation Portal', badgeColor: '#f59e0b' }
   );
 
   res.json({ success: true, count: events.length, events });

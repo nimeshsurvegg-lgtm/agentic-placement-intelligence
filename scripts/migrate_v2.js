@@ -571,7 +571,7 @@ projects.forEach(p => {
 const hacks = [
   {
     id: 'HACK-01',
-    title: 'Quasar 5.0 National EdTech Hackathon',
+    title: 'National Innovation AI Challenge',
     organizer: 'National Technical Education Council',
     category: 'AI Hackathon',
     prize_pool: '₹5,00,000',

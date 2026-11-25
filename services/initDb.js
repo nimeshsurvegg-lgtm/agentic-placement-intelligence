@@ -18,7 +18,7 @@ function initDb(rawDb) {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   tenantsStmt.run('mumbai-univ', 'University of Mumbai (Chancellor Office)', 'MU', 'State University', 'Fort, Mumbai', 'Parent University', null, '{}', NOW, NOW);
-  tenantsStmt.run('vpcoe-mumbai', "Vasantdada Patil Pratishthan's College of Engineering & Visual Arts (VPCOE & VA)", 'VPCOE', 'University of Mumbai', 'Sion, Mumbai', 'Tier 2', 'mumbai-univ', '{"maxOffers":1,"placementSeason":"2026-2027"}', NOW, NOW);
+  tenantsStmt.run('vpcoe-mumbai', 'Premier Technological Institute (Institutional Node)', 'PTI', 'State Technical University', 'Metro Campus', 'Tier 1', 'mumbai-univ', '{"maxOffers":1,"placementSeason":"2026-2027"}', NOW, NOW);
   tenantsStmt.run('coep-pune', 'COEP Technological University (Demo College B)', 'COEP', 'Autonomous State University', 'Shivajinagar, Pune', 'Tier 1', 'mumbai-univ', '{"maxOffers":2}', NOW, NOW);
 
   // 2. USERS & CREDENTIALS
@@ -682,7 +682,7 @@ function initDb(rawDb) {
   const hacks = [
     {
       id: 'HACK-01',
-      title: 'Quasar 5.0 National EdTech Hackathon',
+      title: 'National Innovation AI Challenge',
       organizer: 'National Technical Education Council',
       category: 'AI Hackathon',
       prize_pool: '₹5,00,000',
