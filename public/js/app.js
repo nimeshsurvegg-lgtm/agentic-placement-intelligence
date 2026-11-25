@@ -216,12 +216,17 @@ const API = {
       const res = await fetch(`/api${endpoint}`, { headers: this.headers() });
       if (!res.ok) {
         const text = await res.text();
-        try { return JSON.parse(text); } catch (e) { return { success: false, status: res.status, error: text }; }
+        try {
+          const parsed = JSON.parse(text);
+          return { ...parsed, success: false, status: res.status };
+        } catch (e) {
+          return { success: false, status: res.status, error: text };
+        }
       }
       return await res.json();
     } catch (err) {
       console.error(`API GET ${endpoint} error:`, err);
-      return { success: false, error: err.message };
+      return { success: false, status: 0, error: err.message };
     }
   },
   async post(endpoint, data = {}) {
@@ -607,33 +612,64 @@ async function loadInitialData() {
       API.get('/target-companies')
     ]);
 
-    if (studentRes.success) AppState.studentData = normalizeStudent(studentRes.student);
-    if (drivesRes.success) AppState.drives = (drivesRes.drives || []).map(normalizeDrive);
-    if (rulesRes.success) AppState.eligibilityRules = rulesRes.rules;
-    if (auditRes.success) AppState.auditEntries = auditRes.entries;
-    if (companiesRes.success) AppState.targetCompanies = companiesRes.companies;
+    if (studentRes && studentRes.success && studentRes.student) {
+      AppState.studentData = normalizeStudent(studentRes.student);
+      AppState.studentLoadError = null;
+    } else {
+      AppState.studentData = null;
+      AppState.studentLoadError = {
+        status: (studentRes && studentRes.status) || 404,
+        message: (studentRes && (studentRes.message || studentRes.error)) || 'Student record could not be found in active tenant'
+      };
+      console.warn('Student record load notice:', AppState.studentLoadError);
+    }
 
-    // Load mock questions bank
+    if (drivesRes && drivesRes.success) AppState.drives = (drivesRes.drives || []).map(normalizeDrive);
+    if (rulesRes && rulesRes.success) AppState.eligibilityRules = rulesRes.rules || [];
+    if (auditRes && auditRes.success) AppState.auditEntries = auditRes.entries || [];
+    if (companiesRes && companiesRes.success) AppState.targetCompanies = companiesRes.companies || [];
+
+    // Fallback starter code templates to guarantee no TypeError on undefined questions
+    const fallbackQ1Code = `-- Write query below\nSELECT customer_id, customer_name, department_id, total_spent, DENSE_RANK() OVER (PARTITION BY department_id ORDER BY total_spent DESC) as dept_rank\nFROM customer_orders\nWHERE status != 'SUSPENDED';`;
+    const fallbackQ2Code = `from collections import deque\n\nclass SlidingWindowRateLimiter:\n    def __init__(self, max_requests: int, window_seconds: int):\n        self.max_requests = max_requests\n        self.window_ms = window_seconds * 1000\n        self.clients = {}\n\n    def allow_request(self, client_id: str, ts_ms: int) -> bool:\n        return True\n`;
+
+    // Load mock questions bank with safe optional chaining
     const questionsRes = await API.get('/mock-drives/questions?role=Backend%20Developer');
-    if (questionsRes.success) {
-      AppState.mockDrive.aptitudeBank = questionsRes.aptitudeBank;
+    if (questionsRes && questionsRes.success) {
+      AppState.mockDrive.aptitudeBank = questionsRes.aptitudeBank || [];
+      const machineBank = questionsRes.machineTestBank || [];
       AppState.mockDrive.machineSubmissions = {
-        'CODE-Q1': questionsRes.machineTestBank[0].starterCode,
-        'CODE-Q2': questionsRes.machineTestBank[1].starterCode
+        'CODE-Q1': (machineBank[0] && machineBank[0].starterCode) || fallbackQ1Code,
+        'CODE-Q2': (machineBank[1] && machineBank[1].starterCode) || fallbackQ2Code
       };
       AppState.mockDrive.interviewAnswers = {
         'INT-Q1': 'I use connection pool limits to avoid socket starvation. For isolation, Read Committed avoids dirty reads while preventing serialization deadlocks by ensuring strict transaction ordering.',
         'INT-Q2': 'We implement an exponential backoff retry queue with dead letter queues (DLQ) and idempotency keys to ensure zero dropped messages during network partitions.',
         'INT-Q3': 'I inspect EXPLAIN ANALYZE output, construct composite B-tree indices ordered by high-cardinality equality fields followed by range filters, and partition large time-series tables.'
       };
+    } else {
+      AppState.mockDrive.machineSubmissions = {
+        'CODE-Q1': fallbackQ1Code,
+        'CODE-Q2': fallbackQ2Code
+      };
     }
 
-    // Initialize V2 Enterprise Modules
+    // Initialize V2 Enterprise Modules with error containment
     if (window.initV2Data) {
-      await window.initV2Data();
+      try {
+        await window.initV2Data();
+      } catch (v2Err) {
+        console.warn('V2 data init notice:', v2Err);
+      }
     }
   } catch (err) {
     console.error('Failed to load initial data:', err);
+    if (!AppState.studentData) {
+      AppState.studentLoadError = {
+        status: 500,
+        message: err.message || 'Connection to placement intelligence server failed'
+      };
+    }
   }
 }
 
@@ -1503,10 +1539,84 @@ function renderWellfoundDrivesList(drives, studentId) {
 // ====================================================
 // 1. STUDENT PORTAL (PREMIUM SAAS DESIGN)
 // ====================================================
+window.retryLoadStudent = async function() {
+  const container = document.getElementById('portal-view-container');
+  if (container) {
+    container.innerHTML = `
+      <div class="card" style="text-align: center; padding: 40px; max-width: 600px; margin: 40px auto;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-tertiary); margin-bottom: 16px;">
+          ${getIcon('refresh-cw', 22)}
+        </div>
+        <h3 style="margin-bottom: 8px;">Reconnecting to Student Record...</h3>
+        <p style="color: var(--text-muted); font-size: 14px;">Querying institutional placement ledger</p>
+      </div>
+    `;
+  }
+  await loadInitialData();
+  renderCurrentPortal();
+};
+
+window.switchTenantAndReload = async function(tenantId) {
+  AppState.currentTenantId = tenantId;
+  const select = document.getElementById('tenant-select');
+  if (select) select.value = tenantId;
+  showToast(`Switched active tenant to ${tenantId}`, 'info');
+  await loadInitialData();
+  renderCurrentPortal();
+};
+
 function renderStudentPortal(container) {
   const s = AppState.studentData;
   if (!s) {
-    container.innerHTML = '<div class="card" style="text-align:center; padding:32px;">Loading student record...</div>';
+    if (AppState.studentLoadError) {
+      container.innerHTML = `
+        <div class="card" style="padding: 40px; text-align: center; max-width: 640px; margin: 48px auto; border: 1px solid var(--status-expired-border, #fca5a5); box-shadow: var(--shadow-sm);">
+          <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--status-expired-bg, #fee2e2); color: var(--status-expired-text, #dc2626); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+            ${getIcon('alert-triangle', 26)}
+          </div>
+          <h2 style="font-size: var(--text-lg, 18px); font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Unable to Load Student Record</h2>
+          <p style="font-size: var(--text-sm, 14px); color: var(--text-muted); margin-bottom: 20px;">
+            ${AppState.studentLoadError.message} (HTTP ${AppState.studentLoadError.status})
+          </p>
+          <div style="background: var(--bg-tertiary, #f3f4f6); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px 18px; margin-bottom: 24px; font-size: 13px; text-align: left; line-height: 1.6;">
+            <div><strong>Requested Student ID:</strong> <code>${AppState.activeStudentId || 'STU-VPCOE-042'}</code></div>
+            <div><strong>Active Tenant Context:</strong> <code>${AppState.currentTenantId}</code></div>
+            <div><strong>Root Cause:</strong> ${AppState.studentLoadError.status === 404 ? 'Student record was not found within this institutional tenant boundary.' : 'A server or network connection error occurred.'}</div>
+          </div>
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="window.retryLoadStudent()" style="display: inline-flex; align-items: center; gap: 8px;">
+              ${getIcon('refresh-cw', 16)}
+              <span>Retry Loading</span>
+            </button>
+            <button class="btn btn-secondary" onclick="window.switchTenantAndReload('vpcoe-mumbai')" style="display: inline-flex; align-items: center; gap: 8px;">
+              ${getIcon('building', 16)}
+              <span>Switch to VPCOE Tenant</span>
+            </button>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // Elegant Skeleton Loading UI while in flight
+    container.innerHTML = `
+      <div class="student-portal-skeleton" style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="card" style="padding: 24px;">
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-tertiary, #e5e7eb);"></div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+              <div style="width: 220px; height: 20px; background: var(--bg-tertiary, #e5e7eb); border-radius: 4px;"></div>
+              <div style="width: 340px; height: 14px; background: var(--bg-tertiary, #e5e7eb); border-radius: 4px;"></div>
+            </div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+          <div class="card" style="height: 110px; background: var(--bg-secondary, #f9fafb);"></div>
+          <div class="card" style="height: 110px; background: var(--bg-secondary, #f9fafb);"></div>
+          <div class="card" style="height: 110px; background: var(--bg-secondary, #f9fafb);"></div>
+        </div>
+      </div>
+    `;
     return;
   }
 

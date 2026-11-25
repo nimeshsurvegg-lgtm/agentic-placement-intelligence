@@ -5,24 +5,51 @@ const path = require('path');
 const crypto = require('crypto');
 const { DatabaseSync } = require('node:sqlite');
 
-const DB_PATH = path.join(__dirname, '..', 'data', 'placement.db');
+const DB_PATH = process.env.DATABASE_PATH || path.join(__dirname, '..', 'data', 'placement.db');
 const SCHEMA_PATH = path.join(__dirname, '..', 'data', 'schema.sql');
 
 class DatabaseService {
   constructor() {
-    const isNew = !fs.existsSync(DB_PATH);
+    // Ensure parent directory exists for persistent storage
+    fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+
     this.db = new DatabaseSync(DB_PATH);
     this.db.exec('PRAGMA foreign_keys = ON;');
     this.db.exec('PRAGMA journal_mode = WAL;');
     this.db.exec('PRAGMA synchronous = NORMAL;');
     
-    // Initialize schema
+    // Initialize schema with all 33 tables
     if (fs.existsSync(SCHEMA_PATH)) {
       const schemaSql = fs.readFileSync(SCHEMA_PATH, 'utf8');
       this.db.exec(schemaSql);
     }
     
     this.initGenesisAuditBlock();
+    this.ensureDemoData();
+  }
+
+  // Safe idempotent demo data initialization
+  ensureDemoData() {
+    try {
+      const studentCheck = this.db.prepare("SELECT COUNT(*) as count FROM students WHERE id = 'STU-VPCOE-042'").get();
+      if (!studentCheck || studentCheck.count === 0) {
+        console.log('⚡ Initializing demo records safely and idempotently...');
+        const { initDb } = require('./initDb');
+        initDb(this.db);
+        console.log('✅ Database demo records initialized successfully.');
+
+        // Initialize core audit logs if needed
+        const auditCount = this.db.prepare('SELECT COUNT(*) as count FROM audit_logs').get();
+        if (auditCount.count <= 1) {
+          this.logAudit('vpcoe-mumbai', 'SYSTEM_INITIALIZED', { name: 'Dr. Anil Kulkarni', role: 'TP_OFFICER' }, { message: 'Placement Intelligence Platform Initialized with Multi-Tenant Security' });
+          this.logAudit('vpcoe-mumbai', 'RULE_VERSION_PUBLISHED', { name: 'Dr. Anil Kulkarni', role: 'TP_OFFICER' }, { ruleVersion: '2.1', minCgpa: 7.5, mandatorySkills: ['python', 'git'] });
+          this.logAudit('vpcoe-mumbai', 'STUDENT_CONSENT_GRANTED', { name: 'Rahul Sharma', role: 'STUDENT' }, { scope: ['read_github_repos', 'recruiter_search'], verifiableConsentId: 'DPDP-CONSENT-2026-RS042' });
+          this.logAudit('vpcoe-mumbai', 'EVIDENCE_VERIFIED', { name: 'Automated Ingestion Agent', role: 'AGENT' }, { studentId: 'STU-VPCOE-042', skill: 'python', confidence: 96, source: 'github_repo' });
+        }
+      }
+    } catch (err) {
+      console.error('Database demo data auto-init error:', err);
+    }
   }
 
   // Cryptographic Ledger Genesis Block

@@ -472,3 +472,182 @@ CREATE TABLE IF NOT EXISTS erasure_requests (
   requested_at TEXT NOT NULL,
   completed_at TEXT
 );
+
+-- ====================================================
+-- V2 ENTERPRISE EXTENSION TABLES (23-33)
+-- ====================================================
+
+-- 23. READINESS SCORES (Multi-Pillar Placement Readiness)
+CREATE TABLE IF NOT EXISTS readiness_scores (
+  id TEXT PRIMARY KEY,
+  student_id TEXT NOT NULL UNIQUE,
+  tenant_id TEXT NOT NULL,
+  overall_score REAL NOT NULL,
+  technical_score REAL NOT NULL,
+  aptitude_score REAL NOT NULL,
+  communication_score REAL NOT NULL,
+  resume_score REAL NOT NULL,
+  projects_score REAL NOT NULL,
+  interview_score REAL NOT NULL,
+  breakdown_json TEXT NOT NULL,
+  history_json TEXT NOT NULL,
+  recommendations_json TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
+-- 24. CAREER ROLES & 30-60-90 DAY ROADMAPS
+CREATE TABLE IF NOT EXISTS career_roles (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  required_skills_json TEXT NOT NULL,
+  salary_range TEXT NOT NULL,
+  demand_level TEXT NOT NULL,
+  description TEXT NOT NULL,
+  roadmap_json TEXT NOT NULL
+);
+
+-- 25. CAREER PATHS EXPLORER
+CREATE TABLE IF NOT EXISTS career_paths (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  entry_role TEXT NOT NULL,
+  mid_role TEXT NOT NULL,
+  senior_role TEXT NOT NULL,
+  leadership_role TEXT NOT NULL,
+  avg_starting_salary TEXT NOT NULL,
+  avg_mid_salary TEXT NOT NULL,
+  key_certifications_json TEXT NOT NULL,
+  market_outlook TEXT NOT NULL,
+  growth_rate TEXT NOT NULL
+);
+
+-- 26. ALUMNI MENTORS
+CREATE TABLE IF NOT EXISTS alumni_mentors (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  company TEXT NOT NULL,
+  role TEXT NOT NULL,
+  batch TEXT NOT NULL,
+  branch TEXT NOT NULL,
+  avatar_color TEXT NOT NULL DEFAULT '#4f46e5',
+  bio TEXT NOT NULL,
+  skills_json TEXT NOT NULL,
+  available_slots_json TEXT NOT NULL,
+  is_verified INTEGER NOT NULL DEFAULT 1
+);
+
+-- 27. MENTORSHIP REQUESTS
+CREATE TABLE IF NOT EXISTS mentorship_requests (
+  id TEXT PRIMARY KEY,
+  student_id TEXT NOT NULL,
+  mentor_id TEXT NOT NULL,
+  tenant_id TEXT NOT NULL,
+  topic TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'SCHEDULED', -- PENDING, SCHEDULED, COMPLETED, CANCELLED
+  scheduled_at TEXT NOT NULL,
+  meeting_link TEXT,
+  student_notes TEXT,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+  FOREIGN KEY (mentor_id) REFERENCES alumni_mentors(id) ON DELETE CASCADE
+);
+
+-- 28. UNIFIED OPPORTUNITIES (Campus, Off-Campus, Internships, Hackathons)
+CREATE TABLE IF NOT EXISTS opportunities (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  company TEXT NOT NULL,
+  type TEXT NOT NULL, -- Full-Time Campus, Off-Campus, Internship, Hackathon
+  location TEXT NOT NULL,
+  work_mode TEXT NOT NULL DEFAULT 'Hybrid', -- Onsite, Hybrid, Remote
+  compensation TEXT NOT NULL,
+  min_cgpa REAL NOT NULL DEFAULT 7.0,
+  required_skills_json TEXT NOT NULL,
+  deadline TEXT NOT NULL,
+  source_url TEXT,
+  is_verified INTEGER NOT NULL DEFAULT 1,
+  verified_by TEXT,
+  description TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+-- 29. SAVED OPPORTUNITIES & KANBAN TRACKING
+CREATE TABLE IF NOT EXISTS saved_opportunities (
+  id TEXT PRIMARY KEY,
+  student_id TEXT NOT NULL,
+  opportunity_id TEXT NOT NULL,
+  tenant_id TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'Saved', -- Saved, Applied, In Review
+  saved_at TEXT NOT NULL,
+  UNIQUE(student_id, opportunity_id),
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+  FOREIGN KEY (opportunity_id) REFERENCES opportunities(id) ON DELETE CASCADE
+);
+
+-- 30. PORTFOLIO PROJECTS (AST Verified Studio)
+CREATE TABLE IF NOT EXISTS portfolio_projects (
+  id TEXT PRIMARY KEY,
+  student_id TEXT NOT NULL,
+  tenant_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  problem_statement TEXT NOT NULL,
+  description TEXT NOT NULL,
+  tech_stack_json TEXT NOT NULL,
+  github_url TEXT,
+  live_demo_url TEXT,
+  key_metrics TEXT,
+  ast_verified INTEGER NOT NULL DEFAULT 1,
+  commit_count INTEGER NOT NULL DEFAULT 18,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
+-- 31. TPO INTERVENTIONS & RISK QUEUE
+CREATE TABLE IF NOT EXISTS tpo_interventions (
+  id TEXT PRIMARY KEY,
+  student_id TEXT NOT NULL,
+  tenant_id TEXT NOT NULL,
+  risk_category TEXT NOT NULL, -- Low Assessment, Weak Skills, Incomplete Profile, Backlog Risk
+  severity TEXT NOT NULL DEFAULT 'Medium', -- Low, Medium, High
+  recommended_action TEXT NOT NULL,
+  assigned_officer TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'Active', -- Active, In_Progress, Resolved
+  action_notes TEXT,
+  created_at TEXT NOT NULL,
+  resolved_at TEXT,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
+-- 32. HACKATHONS & CHALLENGES
+CREATE TABLE IF NOT EXISTS hackathons (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  organizer TEXT NOT NULL,
+  category TEXT NOT NULL, -- Coding Challenge, AI Hackathon, Web3, Case Study
+  prize_pool TEXT NOT NULL,
+  deadline TEXT NOT NULL,
+  tags_json TEXT NOT NULL,
+  registered_count INTEGER NOT NULL DEFAULT 45,
+  status TEXT NOT NULL DEFAULT 'Open', -- Open, In Progress, Closed
+  created_at TEXT NOT NULL
+);
+
+-- 33. AGENTIC WORKFLOW AUTOMATION RUNS
+CREATE TABLE IF NOT EXISTS agentic_workflows (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  workflow_type TEXT NOT NULL, -- STUDENT_PREPARATION, TPO_DRIVE_DISPATCH, RECRUITER_SHORTLISTING
+  initiator_role TEXT NOT NULL,
+  trigger_event TEXT NOT NULL,
+  steps_json TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'COMPLETED_WAITING_HUMAN_APPROVAL',
+  human_approval_required INTEGER NOT NULL DEFAULT 1,
+  logs_json TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
