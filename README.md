@@ -9,10 +9,7 @@
 [![Architecture](https://img.shields.io/badge/AI%20Governance-AI%20Helps%2C%20Human%20Decides-indigo?style=flat-square)](file:///routes/api.js)
 [![Credentials](https://img.shields.io/badge/Standard-W3C%20Verifiable%20Credentials%202.0-orange?style=flat-square)](file:///public/js/app.js)
 
-> 🌐 **Live Production Web Service**: **[https://agentic-placement-intelligence.onrender.com](https://agentic-placement-intelligence.onrender.com)**  
-> 📦 **GitHub Source Repository**: **[https://github.com/nimeshsurvegg-lgtm/agentic-placement-intelligence](https://github.com/nimeshsurvegg-lgtm/agentic-placement-intelligence)**  
-> 🏛️ **Institutional Deployment**: Premier Technological Institute (Multi-Tenant Institutional Node)  
-> 🎓 **Accreditation Ready**: Compatible with NAAC Criterion 5.2.1 & NIRF Table 5 Automated Export Standards  
+> 🌐 **Live Production Web Service**: **[https://agentic-placement-intelligence.onrender.com](https://agentic-placement-intelligence.onrender.com)**    
 > 💻 **Local Development Instance**: [http://localhost:3000](http://localhost:3000)
 
 ---
