@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Placement Intelligence Platform | Quasar 5.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <script>
+    // Theme initializer to prevent flash of wrong theme
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Slim 64px SaaS Top Navigation -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <!-- Mobile Sidebar Toggle -->
+        <button class="icon-btn mobile-only" onclick="toggleMobileSidebar()" aria-label="Toggle Navigation Drawer" style="display: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+        </button>
+
+        <a href="#" class="brand-mark" aria-label="EDTECH Intelligence Home">
+          <div class="brand-icon" style="background: var(--gradient-nebula);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">EDTECH</span>
+            <span class="brand-version">NEBULA Ecosystem • Agentic Placement</span>
+          </div>
+        </a>
+
+        <div class="header-divider"></div>
+
+        <div class="tenant-selector-group">
+          <select id="tenant-select" class="tenant-select" aria-label="Select College Tenant">
+            <option value="vpcoe-mumbai" selected>VPCOE & VA (Mumbai)</option>
+            <option value="coep-pune">COEP Tech Univ (Pune)</option>
+            <option value="vjti-mumbai">VJTI (Mumbai)</option>
+          </select>
+          <span id="tenant-full-name" class="tenant-subtitle">Vasantdada Patil Pratishthan's College of Engineering</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Command Palette Trigger -->
+        <button class="btn btn-secondary btn-sm" onclick="openCommandPalette()" aria-label="Open Command Palette" style="padding: 4px 10px; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
+          <span class="header-btn-label" style="font-weight: 500;">Search</span>
+          <span class="kbd-badge" style="font-size: 9px; padding: 1px 4px;">Ctrl+K</span>
+        </button>
+
+        <!-- Guided Demo Tour Trigger -->
+        <button class="btn btn-primary btn-sm" onclick="startGuidedDemo()" aria-label="Start Guided Demo for Judges" style="padding: 4px 10px; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          <span class="header-btn-label">Guided Demo</span>
+        </button>
+
+        <!-- Trust & Compliance Popover Trigger -->
+        <button class="compliance-popover-trigger" onclick="openComplianceModal()" aria-label="View Trust and Compliance Badges">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>Trust & Compliance</span>
+        </button>
+
+        <!-- Notification Button -->
+        <button class="icon-btn" onclick="showToast('Zero unread alerts. All eligibility evaluations are synchronized.', 'info')" aria-label="Notifications">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="notification-dot"></span>
+        </button>
+
+        <!-- Theme Toggle Button -->
+        <button class="icon-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Light and Dark Mode">
+          <svg id="theme-icon-sun" class="lucide-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg id="theme-icon-moon" class="lucide-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+
+        <!-- User Avatar Menu with Dropdown -->
+        <div style="position: relative;">
+          <div class="user-avatar-btn" id="header-avatar" onclick="toggleUserMenu()" title="Account & Sessions">RS</div>
+          <div id="user-menu-dropdown" class="user-menu-dropdown" style="display: none;">
+            <div class="user-menu-header">
+              <div class="user-menu-name" id="menu-user-name">Rahul Sharma</div>
+              <div class="user-menu-email" id="menu-user-email">rahul@vppcoe.demo</div>
+              <div class="user-menu-role" id="menu-user-role">STUDENT</div>
+            </div>
+            <button class="user-menu-item" onclick="openAuthModal('signin')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Switch Account / Sign In</span>
+            </button>
+            <button class="user-menu-item" onclick="openConsentSettingsModal()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>DPDP Privacy Settings</span>
+            </button>
+            <button class="user-menu-item" onclick="downloadPlacementExcel()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              <span>Export Excel Workbook</span>
+            </button>
+            <button class="user-menu-item danger" onclick="handleSignOut()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cockroach Janta Party Inspired Live Transparency & Audit Ticker -->
+  <div class="cjp-ticker-bar" id="cjp-live-ticker">
+    <div class="cjp-ticker-content">
+      <span class="cjp-pulse-chip">
+        <span class="cjp-pulse-dot"></span>
+        <span>Live Audit</span>
+      </span>
+      <span class="cjp-ticker-item">
+        <strong>SHA-256 Ledger:</strong> <span id="ticker-block-count">Block #142 Chained & Tamper-Free</span>
+      </span>
+      <span class="cjp-ticker-divider">•</span>
+      <span class="cjp-ticker-item">
+        <strong>Institutional Integrity:</strong> Zero Unverified Self-Claims Policy Active
+      </span>
+      <span class="cjp-ticker-divider">•</span>
+      <span class="cjp-ticker-item">
+        <strong>Cohort Status:</strong> <span id="ticker-batch-stats">120/120 Students Audited • 74.2% Placement Readiness</span>
+      </span>
+      <span class="cjp-ticker-divider">•</span>
+      <span class="cjp-ticker-item">
+        <strong>Governance:</strong> AI Helps, Human Decides • DPDP Act 2023 Consent Gated
+      </span>
+    </div>
+    <button class="cjp-ticker-action" onclick="openComplianceModal()" title="Inspect Cryptographic Proof & DPDP Safeguards">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <span>Inspect Proof Trail</span>
+    </button>
+  </div>
+
+  <!-- Horizontal Segmented Tabs Navigation -->
+  <nav class="nav-bar" aria-label="Portals">
+    <div class="nav-bar-inner">
+      <button class="nav-tab-btn active" data-portal="student" onclick="switchPortal('student')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Student Portal</span>
+      </button>
+
+      <button class="nav-tab-btn" data-portal="tpo" onclick="switchPortal('tpo')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="1" x2="7" y1="14" y2="14"/><line x1="9" x2="15" y1="8" y2="8"/><line x1="17" x2="23" y1="16" y2="16"/></svg>
+        <span>T&P Officer / Admin</span>
+      </button>
+
+      <button class="nav-tab-btn" data-portal="recruiter" onclick="switchPortal('recruiter')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span>Recruiter Talent Discovery</span>
+      </button>
+
+      <button class="nav-tab-btn" data-portal="chancellor" onclick="switchPortal('chancellor')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>
+        <span>University Chancellor</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Complete App Shell with Collapsible Sidebar -->
+  <div class="app-shell">
+    <!-- Collapsible Role Sidebar -->
+    <aside id="app-sidebar" class="app-sidebar">
+      <div class="sidebar-header-strip">
+        <div class="sidebar-role-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="12 6 12 12 16 14"/></svg>
+          <span id="sidebar-role-label">Student Ecosystem</span>
+        </div>
+        <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Toggle Sidebar">
+          <svg id="sidebar-toggle-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
+        </button>
+      </div>
+      <div id="sidebar-nav-container" class="sidebar-nav">
+        <!-- Rendered dynamically by renderSidebar() -->
+      </div>
+    </aside>
+
+    <!-- Mobile Drawer Backdrop -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="toggleMobileSidebar()"></div>
+
+    <!-- App Main Content Area -->
+    <div class="app-main-content">
+      <!-- Dynamic Breadcrumbs Bar -->
+      <div id="breadcrumbs-bar" class="breadcrumbs-bar">
+        <div class="breadcrumb-trail">
+          <span class="clickable" onclick="navigateToPortal('student')">EDTECH</span>
+          <span>/</span>
+          <span id="breadcrumb-portal-name">Student Portal</span>
+          <span>/</span>
+          <span id="breadcrumb-section-name" class="current">Overview</span>
+        </div>
+        <div class="breadcrumb-actions">
+          <button class="btn btn-secondary btn-sm" onclick="exportCurrentViewPDF()" style="padding: 3px 8px; font-size: 11px; display: flex; align-items: center; gap: 4px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span>PDF Export</span>
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadPlacementExcel()" style="padding: 3px 8px; font-size: 11px; display: flex; align-items: center; gap: 4px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Excel (.xlsx)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main View Container -->
+      <main class="main-wrapper" id="portal-view-container">
+        <div style="text-align: center; padding: 48px; color: var(--text-muted);">
+          <span>Loading Placement Intelligence Engine...</span>
+        </div>
+      </main>
+
+      <!-- Trust & Compliance Footer Strip -->
+      <footer class="trust-strip">
+        <div>
+          <span>Vasantdada Patil Pratishthan's College of Engineering & Visual Arts (VPCOE & VA) • Quasar 5.0</span>
+        </div>
+        <div class="trust-chips-group">
+          <div class="trust-chip" onclick="openComplianceModal()" title="India DPDP Act 2023 & Rules 2025 compliant with notice & purpose limitation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>India DPDP Act 2023</span>
+          </div>
+          <div class="trust-chip" onclick="openComplianceModal()" title="Append-only cryptographic SHA-256 block chain audit trail">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span>Tamper-Evident SHA-256</span>
+          </div>
+          <div class="trust-chip" onclick="openComplianceModal()" title="Human oversight required for any decision affecting candidate placement status">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+            <span>AI Helps, Human Decides</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal & Overlay Containers -->
+  <div id="auth-modal-container"></div>
+  <div id="consent-modal-container"></div>
+  <div id="command-palette-container"></div>
+  <div id="tour-card-container"></div>
+  <div id="compliance-modal-container"></div>
+  <div id="generic-modal-container"></div>
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="vendor/chart.min.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/app-v2.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
